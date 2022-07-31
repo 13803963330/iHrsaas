@@ -158,11 +158,11 @@
   }
   
   .formInfo {
-    .el-input--medium {
-      .el-input__inner {
-        // width: 220px;
-      }
-    }
+    // .el-input--medium {
+    //   .el-input__inner {
+    //     // width: 220px;
+    //   }
+    // }
   
     .inputW {
   
@@ -361,7 +361,7 @@
     .upload-demo {
       display: inline-block;
       width: 49%;
-      float: left;
+      // float: left;
       text-align: center;
   
       .el-upload {
