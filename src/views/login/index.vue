@@ -2,48 +2,35 @@
   <div class="login-container">
     <el-form
       ref="loginForm"
-      :model="loginForm"
-      :rules="loginRules"
       class="login-form"
       auto-complete="on"
       label-position="left"
+      :model="loginForm"
+      :rules="loginRules"
     >
       <div class="title-container">
         <h3 class="title">
           <img src="@/assets/common/login-logo.png" alt="" />
         </h3>
       </div>
-
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
+      <!-- 表单区域 -->
+      <el-form-item prop="mobile">
+        <i class="el-icon-user-solid svg-container"></i>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
+          placeholder="请输入手机号"
+          v-model="loginForm.mobile"
+        ></el-input>
       </el-form-item>
-
       <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
+        <i class="svg-container">
+          <svg-icon iconClass="password"></svg-icon>
+        </i>
         <el-input
           :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
           :type="passwordType"
-          placeholder="Password"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
-        />
+          placeholder="请输入密码"
+          v-model="loginForm.password"
+        ></el-input>
         <span class="show-pwd" @click="showPwd">
           <svg-icon
             :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
@@ -53,10 +40,10 @@
 
       <el-button
         class="loginBtn"
+        @click="login"
         :loading="loading"
         type="primary"
         style="width: 100%; margin-bottom: 30px"
-        @click.native.prevent="handleLogin"
         >登陆</el-button
       >
 
@@ -69,41 +56,35 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
-
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
     return {
-      loginForm: {
-        username: 'admin',
-        password: '111111',
-      },
-      loginRules: {
-        username: [
-          { required: true, trigger: 'blur', validator: validateUsername },
-        ],
-        password: [
-          { required: true, trigger: 'blur', validator: validatePassword },
-        ],
-      },
       loading: false,
       passwordType: 'password',
-      redirect: undefined,
+      loginForm: {
+        mobile: '13800000002',
+        password: '123456',
+      },
+      loginRules: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          {
+            // pattern: /^(?:(?:\+|00)86)?1[3-9]\d{9}$/,
+            message: '手机号格式不正确',
+            trigger: 'blur',
+          },
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          // {
+          //   pattern:
+          //     /^\S*(?=\S{6,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])(?=\S*[!@#$%^&*? ])\S*$/,
+          //   message: '密码请包含数字大小字母特殊字符,且不少于六位',
+          //   trigger: 'blur',
+          // },
+        ],
+      },
     }
   },
   watch: {
@@ -115,6 +96,7 @@ export default {
     },
   },
   methods: {
+    // 密码显示隐藏
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -125,24 +107,17 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
-        if (valid) {
-          this.loading = true
-          this.$store
-            .dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || '/' })
-              this.loading = false
-            })
-            .catch(() => {
-              this.loading = false
-            })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+    // 登陆
+    async login() {
+      this.loading = true
+      try {
+        await this.$refs.loginForm.validate()
+        await this.$store.dispatch('user/getToken', this.loginForm)
+        this.$router.push('/')
+        this.$message.success('登陆成功')
+      } finally {
+        this.loading = false
+      }
     },
   },
 }
@@ -160,6 +135,9 @@ $cursor: #fff;
   .login-container .el-input input {
     color: $cursor;
   }
+}
+.el-form-item__error {
+  color: #fff;
 }
 /* reset element-ui css */
 /* reset element-ui css */
@@ -231,7 +209,18 @@ $light_gray: #eee;
       }
     }
   }
-
+  .show-pwd {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    font-size: 16px;
+    color: #889aa4;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
   .svg-container {
     padding: 6px 5px 6px 15px;
     color: $dark_gray;

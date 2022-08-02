@@ -1,8 +1,22 @@
+import {login} from '@/api/user'
 export default {
   namespaced: true,
-  state: {},
-  mutations: {},
-  actions: {}
+  state: {
+    token: '',
+  },
+  mutations: {
+    setToken(state, payliad) {
+      state.token = payliad
+    },
+  },
+  actions: {
+   async getToken(context, payliad) {
+      
+      const res = await login(payliad)
+      console.log(res);
+      context.commit('setToken', res)
+    },
+  },
 }
 /** import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
