@@ -8,6 +8,7 @@ router.beforeEach((to, from, next) => {
   const token = store.state.user.token
   //1.登录
   if (token) {
+    store.dispatch('user/getuserInfo')
     to.path === '/login'?next('/'):next()
     // 2.未登录
   } else {

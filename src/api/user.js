@@ -8,10 +8,15 @@ return request({
 })
 }
 
-export function getInfo(token) {
-
+export function getInfo() {
+return request({
+    url:'/sys/profile',
+    method: 'POST',
+})
 }
 
-export function logout() {
-
+export function getUserInfpApi(id) {
+    return request({
+        url:'/sys/user/'+id,
+    })
 }

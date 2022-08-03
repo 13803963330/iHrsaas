@@ -1,21 +1,39 @@
-import {login} from '@/api/user'
+import { login, getInfo,getUserInfpApi } from '@/api/user'
+import {setTokeTime} from '@/utils/auth'
 export default {
   namespaced: true,
   state: {
     token: '',
+    userInfo: {},
   },
   mutations: {
+    // 获取用户信息
     setToken(state, payliad) {
       state.token = payliad
     },
+    setuserInfo(state, payliad) {
+      state.userInfo = payliad
+    },
   },
   actions: {
-   async getToken(context, payliad) {
-      
+    // 存储token
+    async getToken(context, payliad) {
       const res = await login(payliad)
-      console.log(res);
       context.commit('setToken', res)
+      // 存储获取token的时间戳
+      setTokeTime()
     },
+    async getuserInfo(context) {
+      const res = await getInfo()
+      const userInfo = await getUserInfpApi(res.userId)
+      context.commit('setuserInfo',{...userInfo,...res})
+      console.log(userInfo);
+      console.log(res)
+    },
+    logout(context){
+      context.commit('setToken','')
+      context.commit('setuserInfo',{})
+    }
   },
 }
 /** import { login, logout, getInfo } from '@/api/user'
