@@ -14,7 +14,11 @@
         <!-- 树形 -->
         <el-tree :data="departs" :props="defaultProps" default-expand-all="">
           <template v-slot="{ data }">
-            <tree-tools @add="showAdddepy" :tree-node="data" />
+            <tree-tools
+              @add="showAdddepy"
+              @compile="showcompile"
+              :tree-node="data"
+            />
           </template>
         </el-tree>
       </el-card>
@@ -22,6 +26,7 @@
 
     <!-- 弹层 -->
     <add-dept
+      ref="Refdept"
       :Visible.sync="dialogVisible"
       @updateto="getdepartApi"
       :currentadd="currentadd"
@@ -68,6 +73,11 @@ export default {
       this.dialogVisible = true
       this.currentadd = val
       console.log(val)
+    },
+    // 编辑
+    showcompile(val) {
+      this.dialogVisible = true
+      this.$refs.Refdept.getDeptByid(val.id)
     },
   },
 }

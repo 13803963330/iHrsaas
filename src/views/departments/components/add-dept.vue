@@ -1,5 +1,10 @@
 <template>
-  <el-dialog title="添加部门" :visible.sync="Visible" width="66%">
+  <el-dialog
+    :title="Textted"
+    :visible="Visible"
+    width="66%"
+    @close="$emit('update:visible', false)"
+  >
     <el-form
       ref="form"
       :model="formData"
@@ -52,25 +57,43 @@ import {
   getdepartApi,
   getemployeesApi,
   addemployeesApi,
+  getempApi,
+  setempApi,
 } from '@/api/departments'
 
 export default {
   data() {
     // 判定是否重复
-    const checkDeptName = (rule, value, callback) => {
-      if (!this.currentadd.children) {
-        return callback()
+    const checkDeptName = async (rule, value, callback) => {
+      let isRoot
+      // 编辑/添加
+      if (this.formData.id) {
+        const { depts } = await getdepartApi()
+        const filtersDeps = depts.filter(
+          (item) =>
+            item.pid === this.formData.pid && item.id !== this.formData.id,
+        )
+        isRoot = filtersDeps.some((item) => item.name === value)
+      } else {
+        if (!this.currentadd.children) {
+          return callback()
+        }
+        isRoot = this.currentadd.children.some((item) => item.name === value)
       }
-      this.currentadd.children.some((item) => item.name === value)
-        ? callback(new Error('职门重复'))
-        : callback()
+      isRoot ? callback(new Error('职门重复')) : callback()
     }
 
     const checkDeptCode = async (rule, value, cod) => {
       const { depts } = await getdepartApi()
-      depts.some((item) => item.code === value)
-        ? cod(new Error('部门编码重复'))
-        : cod()
+      let isRoot
+      if (this.formData.id) {
+        isRoot = depts
+          .filter((item) => item.id !== this.formData.id)
+          .some((item) => item.code === value)
+      } else {
+        isRoot = depts.some((item) => item.code === value)
+      }
+      isRoot ? cod(new Error('部门编码重复')) : cod()
     }
     return {
       formData: {
@@ -131,7 +154,11 @@ export default {
   created() {
     this.getemployeesApi()
   },
-
+  computed: {
+    Textted() {
+      return this.formData.id ? '编辑部门' : '添加部门'
+    },
+  },
   methods: {
     async getemployeesApi() {
       const res = await getemployeesApi()
@@ -139,15 +166,35 @@ export default {
     },
     onClose() {
       this.$emit('update:visible', false)
+      this.$refs.form.resetFields()
+      this.formData = {
+        name: '', // 部门名称
+        code: '', // 部门编码
+        manager: '', // 部门管理者
+        introduce: '', // 部门介绍
+        pid: '',
+      }
     },
     async oncLose() {
       // 效验表单
       await this.$refs.form.validate()
-      this.formData.pid = this.currentadd.id
-      console.log(this.formData)
-      await addemployeesApi(this.formData)
+      // 编辑
+      if (this.formData.id) {
+        await setempApi(this.formData)
+        this.$message.success('编辑成功')
+      } else {
+        this.formData.pid = this.currentadd.id
+        await addemployeesApi(this.formData)
+        this.$message.success('新增部门')
+      }
       this.$emit('update:visible', false)
       this.$emit('updateto')
+    },
+    // 编辑
+    async getDeptByid(id) {
+      const res = await getempApi(id)
+      console.log(res)
+      this.formData = res
     },
   },
 }

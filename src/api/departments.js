@@ -29,3 +29,19 @@ export function movedepartApi(id) {
       data
     })
   }
+
+  // 根据id获取部门详情
+  export function getempApi(id) {
+    return request({
+      url: '/company/department/'+id,
+    })
+  }
+
+    // 根据id修改部门详情
+    export function setempApi(data) {
+      return request({
+        url: '/company/department/'+data.id,
+        method:'PUT',
+        data
+      })
+    }
