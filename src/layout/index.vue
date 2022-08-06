@@ -94,4 +94,7 @@ export default {
 .mobile .fixed-header {
   width: 100%;
 }
+body {
+  background-color: #f8fafd !important;
+}
 </style>
