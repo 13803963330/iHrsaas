@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container">
     <div class="app-container">
-      <el-card class="box-card">
+      <el-card class="box-card" v-loading="loading">
         <!-- 头部 -->
         <tree-tools
           @add="showAdddepy"
@@ -52,6 +52,7 @@ export default {
       ],
       dialogVisible: false,
       currentadd: {},
+      loading: false,
     }
   },
   components: {
@@ -65,9 +66,11 @@ export default {
 
   methods: {
     async getdepartApi() {
+      this.loading = true
       const res = await getdepartApi()
       console.log(res)
       this.departs = ListToTree(res.depts, '')
+      this.loading = false
     },
     showAdddepy(val) {
       this.dialogVisible = true
