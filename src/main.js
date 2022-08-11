@@ -15,6 +15,9 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 import * as directives from './directives'
+// 组件封装集成
+import components from './components'
+Vue.use(components)
 
 if (process.env.NODE_ENV === 'production') {
   const { mockXHR } = require('../mock')
