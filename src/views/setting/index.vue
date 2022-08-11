@@ -33,7 +33,29 @@
           >
           </el-pagination>
         </el-tab-pane>
-        <el-tab-pane label="公司信息" name="third">角色管理</el-tab-pane>
+        <el-tab-pane label="公司信息" name="third">
+          <el-alert
+            title="对公司名称、公司地址、营业执照、公司地区的更新，将使得公司资料被重新审核，请谨慎修改"
+            name="info"
+            show-icon
+            :closable="false"
+          >
+          </el-alert>
+          <el-form ref="form" label-width="80px" style="margin-top: 50px">
+            <el-form-item label="公司名称">
+              <el-input v-model="SettingObj.name" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="公司地址">
+              <el-input v-model="SettingObj.companyAddress" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="公司邮箱">
+              <el-input v-model="SettingObj.mailbox" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="备注">
+              <el-input v-model="SettingObj.remarks" disabled></el-input>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
       </el-tabs>
     </div>
     <!-- 新增弹窗 -->
@@ -66,7 +88,7 @@
 </template>
 
 <script>
-import { getRoleList, getRoleAddApi } from '@/api/index'
+import { getRoleList, getRoleAddApi, getSettingObj } from '@/api/index'
 export default {
   data() {
     return {
@@ -84,11 +106,13 @@ export default {
       addRoleformRules: {
         name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
       },
+      SettingObj:{}
     }
   },
 
   created() {
     this.getRoleList()
+    this.getSettingObj()
   },
 
   methods: {
@@ -129,8 +153,18 @@ export default {
       this.$refs.addform.resetFields()
       this.addRoleform.description = ''
     },
+    // 获取公司信息
+    async getSettingObj() {
+      const res = await getSettingObj(this.$store.state.user.userInfo.companyId)
+      console.log(res)
+      this.SettingObj=res
+    },
   },
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped>
+.el-input__inner {
+  width: 50%;
+}
+</style>
