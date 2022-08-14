@@ -1,5 +1,4 @@
 import Vue from 'vue'
-
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
@@ -11,12 +10,20 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
+import dayjs from 'dayjs'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+// 自定义指令
 import * as directives from './directives'
 // 组件封装集成
 import components from './components'
+// 注册过滤器
+import * as filters from './filters'
+for(let key in filters){
+Vue.filter(key, filters[key])
+}
+
 Vue.use(components)
 
 if (process.env.NODE_ENV === 'production') {
@@ -40,3 +47,4 @@ new Vue({
   store,
   render: (h) => h(App),
 })
+
