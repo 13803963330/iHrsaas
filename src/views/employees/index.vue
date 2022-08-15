@@ -25,6 +25,7 @@
                   height: 100px;
                   padding: 10px;
                 "
+                @click="Qrcode(scope.row.staffPhoto)"
               ></img>
             </template>
           </el-table-column>
@@ -85,6 +86,13 @@
     :visible.sync="addemployeeVisible"
     >
      </addemployees>
+     <!-- 头像弹层 -->
+     <el-dialog
+      title="头像弹层"
+      :visible.sync="imgVisible"
+      width="30%">
+      <canvas ref="myCanvas" />
+      </el-dialog>
   </div>
 </template>
 
@@ -92,6 +100,7 @@
 import { geemployeesListApi,delEmployee } from '@/api/index'
 import addemployees from './components/add-employees.vue'
 import employees from '@/constant/employees';
+import Qrcode from 'qrcode'
 const {hireType} = employees
 export default {
   name: 'mployees',
@@ -104,6 +113,8 @@ export default {
         size: 5,
       },
       addemployeeVisible:false, //控制新增弹窗
+      imgVisible: false, //头像弹层
+      iimg:'../../assets/404_images/微信图片_20220815162811.jpg'
     }
   },
 components:{
@@ -189,6 +200,16 @@ addemployees
           multiHeader :[['姓名', '主要信息', '', '', '', '', '部门']],
           merges :['A1:A2', 'B1:F1', 'G1:G2']
         })
+    },
+    // 二维码
+    Qrcode(staffPhoto){
+      if (!staffPhoto) return this.$message.error('用户未上传头像')
+      this.imgVisible= true
+      // 防止视图更新不同步
+      this.$nextTick(()=>{
+        const myCanvas=this.$refs.myCanvas
+        Qrcode.toCanvas(myCanvas,staffPhoto)
+      })
     }
   },
 }
