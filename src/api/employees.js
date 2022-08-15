@@ -38,3 +38,21 @@ export function delEmployee(id) {
     data
   })
 }
+/** *
+ *  读取用户详情的基础信息
+ * **/
+ export function getPersonalDetail(id) {
+  return request({
+    url: `/employees/${id}/personalInfo`
+  })
+}
+/** *
+ *  更新用户详情的基础信息
+ * **/
+ export function updatePersonal(data,Id) {
+  return request({
+    url: `/employees/${Id}/personalInfo`,
+    method: 'put',
+    data
+  })
+}

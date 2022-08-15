@@ -52,7 +52,9 @@
           </el-table-column>
           <el-table-column label="操作" sortable="" fixed="right" width="280">
             <template slot-scope="{ row }">
-              <el-button type="text" size="small">查看</el-button>
+              <el-button type="text" size="small"
+              @click="$router.push('/employees/detail/'+ row.id)"
+              >查看</el-button>
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
@@ -77,11 +79,12 @@
         </el-row>
       </el-card>
     </div>
-
     <!-- 添加 -->
     <addemployees
     @addYg="getemployees"
-     :visible.sync="addemployeeVisible"/>
+    :visible.sync="addemployeeVisible"
+    >
+     </addemployees>
   </div>
 </template>
 
@@ -183,8 +186,8 @@ addemployees
           filename: 'excel-list', //非必填
           autoWidth: true, //非必填
           bookType: 'xlsx', //非必填
-          multiHeader = [['姓名', '主要信息', '', '', '', '', '部门']],
-          merges = ['A1:A2', 'B1:F1', 'G1:G2']
+          multiHeader :[['姓名', '主要信息', '', '', '', '', '部门']],
+          merges :['A1:A2', 'B1:F1', 'G1:G2']
         })
     }
   },

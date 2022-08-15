@@ -20,3 +20,14 @@ export function getUserInfpApi(id) {
         url:'/sys/user/'+id,
     })
 }
+/** *
+ *
+ * 保存员工的基本信息
+ * **/
+ export function saveUserDetailById(data,id) {
+    return request({
+      url: '/sys/user/' +id,
+      method: 'put',
+      data
+    })
+  }

@@ -1,19 +1,16 @@
 <template>
-  <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
-  </div>
+  <UploadImg @onSuccess="onSuccess1"></UploadImg>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 export default {
   name: 'Dashboard',
-  computed: {
-    ...mapGetters([
-      'name'
-    ])
-  }
+  computed: {},
+  methods: {
+    onSuccess1({ url }) {
+      console.log(url)
+    },
+  },
 }
 </script>
 
